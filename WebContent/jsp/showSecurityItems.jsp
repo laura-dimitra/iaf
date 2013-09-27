@@ -18,6 +18,7 @@
 			<tbody>
 				<tr>
 					<subHeader>Role</subHeader>
+					<subHeader></subHeader>
 					<subHeader>SpecialSubjects</subHeader>
 					<subHeader>Groups</subHeader>
 				</tr>
@@ -27,6 +28,7 @@
 					<xtags:variable id="srole" select="ancestor::*/applicationDeploymentDescriptor/application/security-role[@id=$role]/role-name"/>
 					<tr ref="spannedRow">
 						<td rowspan="<%=count%>"><xtags:valueOf select="$srole"/></td>
+						<td rowspan="<%=count%>"><booleanImage value="<%=request.isUserInRole(srole)%>"/></td>
 						<td rowspan="<%=count%>"><xtags:valueOf select="specialSubjects/@name"/></td>
 						<td><xtags:valueOf select="groups[1]/@name"/></td>
 					</tr>
