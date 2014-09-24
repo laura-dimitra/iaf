@@ -54,7 +54,7 @@ public class SoapValidator extends XmlValidator {
     }
 
     @Override
-    public void setSchemaLocation(String schemaLocation) {
+    public void setSchemaLocation(String schemaLocation) throws ConfigurationException {
         super.setSchemaLocation(schemaLocation + (schemaLocation.length() > 0 ? " "  : "") + StringUtils.join(versions, " "));
         setSchemaLocation = schemaLocation;
     }
@@ -78,7 +78,7 @@ public class SoapValidator extends XmlValidator {
         throw new IllegalArgumentException("The root element of a soap envelope is always " + getRoot());
     }
 
-    public void setVersion(String s) {
+    public void setVersion(String s) throws ConfigurationException {
         if ("any".equals(s) || StringUtils.isBlank(s)) {
             this.versions = SoapVersion.values();
         } else {

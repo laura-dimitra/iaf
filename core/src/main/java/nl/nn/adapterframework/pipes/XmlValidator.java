@@ -113,11 +113,7 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 				StringUtils.isNotEmpty(getSchemaSessionKey())) {
 			throw new ConfigurationException(getLogPrefix(null) + "cannot have schemaSessionKey together with schemaLocation or noNamespaceSchemaLocation");
 		}
-		if (StringUtils.isEmpty(getNoNamespaceSchemaLocation()) &&
-				StringUtils.isEmpty(getSchemaLocation()) &&
-				StringUtils.isEmpty(getSchemaSessionKey())) {
-			throw new ConfigurationException(getLogPrefix(null) + "must have either schemaSessionKey, schemaLocation or noNamespaceSchemaLocation");
-		}
+        validateConfiguration();
 
 		if (StringUtils.isNotEmpty(getSoapNamespace())) {
 			// Don't use this warning yet as it is used for the IFSA to Tibco
@@ -169,6 +165,15 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 		registerEvent(AbstractXmlValidator.XML_VALIDATOR_NOT_VALID_MONITOR_EVENT);
 		registerEvent(AbstractXmlValidator.XML_VALIDATOR_VALID_MONITOR_EVENT);
 	}
+
+    protected void validateConfiguration() throws ConfigurationException {
+        if (StringUtils.isEmpty(getNoNamespaceSchemaLocation()) &&
+                StringUtils.isEmpty(getSchemaLocation()) &&
+                StringUtils.isEmpty(getSchemaSessionKey())) {
+            throw new ConfigurationException(getLogPrefix(null) + "must have either schemaSessionKey, schemaLocation or noNamespaceSchemaLocation");
+        }
+
+    }
 
      /**
       * Validate the XML string
@@ -308,7 +313,7 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 	 *
 	 * N.B. since 4.3.0 schema locations are resolved automatically, without the need for ${baseResourceURL}
 	 */
-	public void setSchemaLocation(String schemaLocation) {
+	public void setSchemaLocation(String schemaLocation) throws ConfigurationException {
 		this.schemaLocation = schemaLocation;
 	}
 
@@ -454,7 +459,7 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 	}
 
 	public List<Schema> getSchemas() throws ConfigurationException {
-		List<Schema> schemas = new ArrayList<Schema>();
+		final List<Schema> schemas = new ArrayList<Schema>();
 		if (StringUtils.isNotEmpty(getNoNamespaceSchemaLocation())) {
 			schemas.add(
 				new Schema() {

@@ -145,7 +145,6 @@ public class WsdlTest {
     }
 
     @Test
-    @Ignore("TODO!! #7")
     public void fromWsdl() throws ConfigurationException, IOException, XMLStreamException, SAXException, NamingException, ParserConfigurationException, URISyntaxException {
         WsdlXmlValidator inputValidator = new WsdlXmlValidator();
         inputValidator.setWsdl("/GetPolicyAndPartyDetails/wsdl/PolicyNL_GPAPD_Concrete_20140502_API.wsdl");

@@ -71,7 +71,7 @@ public class EsbSoapValidator extends SoapValidator {
     }
 
     @Override
-    public void setSchemaLocation(String schemaLocation) {
+    public void setSchemaLocation(String schemaLocation) throws ConfigurationException {
         super.setSchemaLocation(schemaLocation + " " + GENERIC_HEADER.get(mode).xmlns + " " + GENERIC_HEADER.get(mode).xsd);
         explicitSchemaLocation = schemaLocation;
     }
@@ -89,9 +89,11 @@ public class EsbSoapValidator extends SoapValidator {
         this.direction = Direction.valueOf(direction.toUpperCase());
     }
 
-    public void setMode(String mode) { // Why does PropertyUtil not understand enums?
+    public void setMode(String mode) throws ConfigurationException { // Why does PropertyUtil not understand enums?
         this.mode = EsbSoapWrapperPipe.Mode.valueOf(mode.toUpperCase());
-        if (explicitSchemaLocation != null) setSchemaLocation(explicitSchemaLocation);
+        if (explicitSchemaLocation != null) {
+            setSchemaLocation(explicitSchemaLocation);
+        }
     }
 
     public String getMode() {

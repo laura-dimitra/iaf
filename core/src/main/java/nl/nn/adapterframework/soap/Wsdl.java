@@ -359,8 +359,10 @@ public class Wsdl {
                 throw new IllegalStateException("The adapter " + pipeLine + " has a validator using the schema attribute but a namespace is required");
             }
         } else {
-            xsds = SchemaUtils.getXsds(xmlValidator.getSchemaLocation(),
-                    excludeXsds, xmlValidator.isAddNamespaceToSchema(),
+            xsds = SchemaUtils.getXsds(
+                    xmlValidator.getSchemaLocation(),
+                    excludeXsds,
+                    xmlValidator.isAddNamespaceToSchema(),
                     checkSchemaLocationOnly);
         }
         return xsds;

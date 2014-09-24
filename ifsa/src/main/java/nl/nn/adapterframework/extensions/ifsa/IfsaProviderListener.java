@@ -17,7 +17,7 @@ package nl.nn.adapterframework.extensions.ifsa;
 
 /**
  * Implementation of {@link IPullingListener} that acts as an IFSA-service.
- * 
+ *
  * There is no need or possibility to set the ServiceId as the Provider will receive all messages
  * for this Application on the same serviceQueue.
  *
@@ -27,7 +27,7 @@ package nl.nn.adapterframework.extensions.ifsa;
  * <tr><td>className</td><td>nl.nn.adapterframework.extensions.ifsa.IfsaProviderListener</td><td>&nbsp;</td></tr>
  * <tr><td>{@link #setName(String) name}</td><td>name of the object</td><td>&nbsp;</td></tr>
  * <tr><td>{@link #setApplicationId(String) applicationId}</td><td>the ApplicationID, in the form of "IFSA://<i>AppId</i>"</td><td>&nbsp;</td></tr>
- * <tr><td>{@link #setMessageProtocol(String) messageProtocol}</td><td>protocol of IFSA-Service to be called. Possible values 
+ * <tr><td>{@link #setMessageProtocol(String) messageProtocol}</td><td>protocol of IFSA-Service to be called. Possible values
  * <ul>
  *   <li>"FF": Fire & Forget protocol</li>
  *   <li>"RR": Request-Reply protocol</li>
@@ -48,14 +48,14 @@ package nl.nn.adapterframework.extensions.ifsa;
  *   <li>ifsaOccurrence</li>
  *   <li>ifsaVersion</li>
  * </ul>
- * N.B. 
+ * N.B.
  * Starting from IFSA-jms version 2.2.10.055(beta) a feature was created to have separate service-queues for Request/Reply
  * and for Fire & Forget services. This allows applications to provide both types of services, each in its own transaction
- * mode. This options is not compatible with earlier versions of IFSA-jms. If an earlier version of IFSA-jms is deployed on 
+ * mode. This options is not compatible with earlier versions of IFSA-jms. If an earlier version of IFSA-jms is deployed on
  * the server, this behaviour must be disabled by the following setting in DeploymentSpecifics.properties:
- * 
+ *
  * <code>ifsa.provider.useSelectors=false</code>
- * 
+ *
  * @author  Gerrit van Brakel
  * @since   4.2, switch class: 4.8
  */

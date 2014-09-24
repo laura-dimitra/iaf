@@ -21,7 +21,7 @@ public class SoapValidatorTest {
 
     @Test
 	@Ignore("Don't know what it should test any more")
-    public void basic() {
+    public void basic() throws ConfigurationException {
         SoapValidator validator = new SoapValidator();
         validator.setSchemaLocation("http://www.ing.com/pim test.xsd");
         validator.setSoapBody("{http://www.ing.com/pim}a");
@@ -32,7 +32,7 @@ public class SoapValidatorTest {
     }
     @Test
 	@Ignore("Don't know what it should test any more")
-    public void defaultNamespace()  {
+    public void defaultNamespace() throws ConfigurationException {
         SoapValidator validator = new SoapValidator();
         validator.setSchemaLocation("http://www.ing.com/pim test.xsd");
         validator.setSoapBody("a");

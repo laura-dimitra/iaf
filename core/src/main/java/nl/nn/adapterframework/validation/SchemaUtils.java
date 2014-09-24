@@ -71,14 +71,18 @@ public class SchemaUtils {
     public static final QName NAMESPACE      = new QName(null, "namespace");
     public static final QName NAME           = new QName(null, "name");
 
-    public static Set<XSD> getXsds(String schemaLocation,
-            List<String> excludes, boolean addNamespaceToSchema,
+    public static Set<XSD> getXsds(
+            String schemaLocation,
+            List<String> excludes,
+            boolean addNamespaceToSchema,
             boolean checkSchemaLocationOnly)
             throws IOException, XMLStreamException {
-        Set<XSD> xsds = new TreeSet<XSD>();
+        final Set<XSD> xsds = new TreeSet<XSD>();
         if (schemaLocation != null) {
             String[] split =  schemaLocation.trim().split("\\s+");
-            if (split.length % 2 != 0) throw new IllegalStateException("The schema must exist from an even number of strings, but it is " + schemaLocation);
+            if (split.length % 2 != 0) {
+                throw new IllegalArgumentException("The schema must exist from an even number of strings, but it is " + schemaLocation);
+            }
             if (!checkSchemaLocationOnly) {
                 for (int i = 0; i < split.length; i += 2) {
                     if (!(excludes != null
