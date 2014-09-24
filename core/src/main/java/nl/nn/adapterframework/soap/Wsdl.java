@@ -341,10 +341,11 @@ public class Wsdl {
     public Set<XSD> initXsds(XmlValidator xmlValidator,
             boolean checkSchemaLocationOnly)
                     throws IOException, XMLStreamException {
-        Set<XSD> xsds = new TreeSet<XSD>();
+
         String inputSchema = xmlValidator.getSchema();
         if (inputSchema != null) {
-            // In case of a WebServiceListener using soap=true it might be
+			Set<XSD> xsds = new TreeSet<XSD>();
+			// In case of a WebServiceListener using soap=true it might be
             // valid to use the schema attribute (in which case the schema
             // doesn't have a namespace) as the WebServiceListener will
             // remove the soap envelop and body element before it is
@@ -358,15 +359,15 @@ public class Wsdl {
             } else {
                 throw new IllegalStateException("The adapter " + pipeLine + " has a validator using the schema attribute but a namespace is required");
             }
+			return xsds;
         } else {
-            xsds = SchemaUtils.getXsds(
+            return SchemaUtils.getXsds(
                     xmlValidator.getSchemaLocation(),
                     excludeXsds,
                     xmlValidator.isAddNamespaceToSchema(),
                     checkSchemaLocationOnly);
         }
-        return xsds;
-    }
+	}
 
     /**
      * Generates a zip file (and writes it to the given outputstream), containing the WSDL and all referenced XSD's.

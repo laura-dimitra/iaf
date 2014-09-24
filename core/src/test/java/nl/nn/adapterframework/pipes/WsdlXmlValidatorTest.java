@@ -4,13 +4,21 @@ import nl.nn.adapterframework.configuration.ConfigurationException;
 import nl.nn.adapterframework.core.IPipeLineSession;
 import nl.nn.adapterframework.core.PipeForward;
 import nl.nn.adapterframework.core.PipeRunException;
+import nl.nn.adapterframework.validation.SchemaUtils;
+import nl.nn.adapterframework.validation.XSD;
 import nl.nn.adapterframework.validation.XmlValidatorException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import nl.nn.javax.wsdl.WSDLException;
-import java.io.IOException;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 
@@ -183,6 +191,22 @@ public class WsdlXmlValidatorTest {
                 "</Envelope>\n" +
                 "", session);
     }
+	@Test
+	public void getSchemaLocation() throws ConfigurationException, IOException, XMLStreamException {
+		WsdlXmlValidator val = new WsdlXmlValidator();
+		val.setWsdl(TIBCO);
+		String schemaLocation = val.getSchemaLocation();
+		Set<XSD> xsds = SchemaUtils.getXsds(schemaLocation, Collections.<String>emptyList(), false, false);
+		assertEquals(5, xsds.size());
+		assertEquals("http://www.ing.com/bis/xsd/nl/banking/bankingcustomer_generate_01_getpartybasicdatabanking_request_01", xsds.iterator().next().getTargetNamespace());
+		assertNotNull(xsds.iterator().next().getUrl().openStream());
+		assertEquals("http://www.ing.com/bis/xsd/nl/banking/bankingcustomer_generate_01_getpartybasicdatabanking_response_01 file:/Users/michiel/github/ibissource/iaf/core/target/test-classes/Tibco/wsdl/BankingCustomer_01_GetPartyBasicDataBanking_01_concrete1.wsdl#http://www.ing.com/bis/xsd/nl/banking/bankingcustomer_generate_01_getpartybasicdatabanking_response_01\n" +
+						"http://www.ing.com/CSP/XSD/General/Message_2 file:/Users/michiel/github/ibissource/iaf/core/target/test-classes/Tibco/wsdl/BankingCustomer_01_GetPartyBasicDataBanking_01_concrete1.wsdl#http://www.ing.com/CSP/XSD/General/Message_2\n" +
+						"http://www.ing.com/nl/banking/coe/xsd/bankingcustomer_generate_01/getpartybasicdatabanking_01 file:/Users/michiel/github/ibissource/iaf/core/target/test-classes/Tibco/wsdl/BankingCustomer_01_GetPartyBasicDataBanking_01_concrete1.wsdl#http://www.ing.com/nl/banking/coe/xsd/bankingcustomer_generate_01/getpartybasicdatabanking_01\n" +
+						"http://ing.nn.afd/AFDTypes file:/Users/michiel/github/ibissource/iaf/core/target/test-classes/Tibco/wsdl/BankingCustomer_01_GetPartyBasicDataBanking_01_concrete1.wsdl#http://ing.nn.afd/AFDTypes\n" +
+						"http://www.ing.com/bis/xsd/nl/banking/bankingcustomer_generate_01_getpartybasicdatabanking_request_01 file:/Users/michiel/github/ibissource/iaf/core/target/test-classes/Tibco/wsdl/BankingCustomer_01_GetPartyBasicDataBanking_01_concrete1.wsdl#http://www.ing.com/bis/xsd/nl/banking/bankingcustomer_generate_01_getpartybasicdatabanking_request_01",
+				val.getSchemaLocation());
+	}
 
 
 

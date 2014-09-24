@@ -39,6 +39,9 @@ public class SchemasProviderImpl implements SchemasProvider {
                     public String getSystemId() {
                         return ClassUtils.getResourceURL(xsd).toExternalForm();
                     }
+					public String getTargetNamespace() {
+						throw new UnsupportedOperationException();
+					}
                 }
         );
     }

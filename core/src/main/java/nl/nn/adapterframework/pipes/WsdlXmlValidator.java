@@ -21,6 +21,7 @@ import nl.nn.adapterframework.core.PipeForward;
 import nl.nn.adapterframework.core.PipeRunException;
 import nl.nn.adapterframework.core.PipeRunResult;
 import nl.nn.adapterframework.soap.SoapValidator;
+import nl.nn.adapterframework.soap.Wsdl;
 import nl.nn.adapterframework.util.ClassUtils;
 import nl.nn.adapterframework.util.LogUtil;
 import nl.nn.com.ibm.wsdl.extensions.schema.SchemaSerializer;
@@ -31,6 +32,7 @@ import nl.nn.javax.wsdl.extensions.schema.Schema;
 import nl.nn.javax.wsdl.factory.WSDLFactory;
 import nl.nn.javax.wsdl.xml.WSDLReader;
 import nl.nn.javax.xml.namespace.QName;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
@@ -104,13 +106,19 @@ public class WsdlXmlValidator extends SoapValidator {
         }
     }
 
+
+
 	@Override
 	public void configure() throws ConfigurationException {
 		// Prevent super.configure() from throwing an exception because
 		// schemaLocation is empty.
-		schemaLocation = "dummy";
-		super.configure();
-		schemaLocation = null;
+		if (schemaLocation == null) {
+			schemaLocation = "dummy";
+			super.configure();
+			schemaLocation = null;
+		} else {
+			super.configure();
+		}
 	}
 
 	@Override
@@ -126,6 +134,25 @@ public class WsdlXmlValidator extends SoapValidator {
 	@Override
 	public void setSchemaLocation(String schemaLocation) {
 		throw new IllegalArgumentException("The schemaLocation attribute isn't supported");
+	}
+
+	@Override
+	public String getSchemaLocation() {
+		try {
+			StringBuilder build = new StringBuilder();
+			for (nl.nn.adapterframework.validation.Schema schema : getSchemas()) {
+				if (build.length() > 0) {
+					build.append("\n");
+				}
+				if (! getSoapNamespace().equals(schema.getTargetNamespace())) {
+					build.append(schema.toString());
+				}
+			}
+			return build.toString();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	protected static Definition getDefinition(URL url) throws WSDLException, IOException {
@@ -176,9 +203,18 @@ public class WsdlXmlValidator extends SoapValidator {
                             }
                             return ClassUtils.getResourceURL(validateSoapEnvelope.xsd).openStream();
                         }
+
+						public String getTargetNamespace() {
+							return validateSoapEnvelope.schema;
+						}
                         public String getSystemId() {
                             return ClassUtils.getResourceURL(validateSoapEnvelope.xsd).toExternalForm();
                         }
+
+						@Override
+						public String toString() {
+							return validateSoapEnvelope.schema + " " + getSystemId();
+						}
 
                     }
             );
@@ -191,27 +227,34 @@ public class WsdlXmlValidator extends SoapValidator {
 				final Schema schema = (Schema) type;
 				addNamespaces(schema, definition.getNamespaces());
 				result.add(
-					new nl.nn.adapterframework.validation.Schema() {
+						new nl.nn.adapterframework.validation.Schema() {
 
-						public InputStream getInputStream() {
-							try {
-								return toInputStream(schema);
-							} catch (WSDLException e) {
-                                throw new RuntimeException("WSDLException while reading schema " + e.getMessage(), e);
-							} catch (UnsupportedEncodingException e) {
-                                // can not happen
-                                throw new RuntimeException(e);
-                            }
-                        }
+							public InputStream getInputStream() {
+								try {
+									return toInputStream(schema);
+								} catch (WSDLException e) {
+									throw new RuntimeException("WSDLException while reading schema " + e.getMessage(), e);
+								} catch (UnsupportedEncodingException e) {
+									// can not happen
+									throw new RuntimeException(e);
+								}
+							}
+							public String getTargetNamespace() {
+								return schema.getElement().getAttribute("targetNamespace");
+							}
 
-						public String getSystemId() {
-							return ClassUtils.getResourceURL(wsdl).toExternalForm();
-						}
+							public String getSystemId() {
+								return ClassUtils.getResourceURL(wsdl).toExternalForm() + "#" + getTargetNamespace();
+							}
 
-					}
-				);
+							@Override
+							public String toString() {
+								return getTargetNamespace() + " " + getSystemId();
+							}
+						});
 			}
 		}
+
 		return result;
 	}
 

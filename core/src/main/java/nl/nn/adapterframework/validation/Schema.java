@@ -28,4 +28,6 @@ public interface Schema {
 
 	String getSystemId();
 
+	String getTargetNamespace();
+
 }

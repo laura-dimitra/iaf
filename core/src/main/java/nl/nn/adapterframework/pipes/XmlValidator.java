@@ -469,6 +469,9 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 					public String getSystemId() {
 						return ClassUtils.getResourceURL(getNoNamespaceSchemaLocation()).toExternalForm();
 					}
+					public String getTargetNamespace() {
+						return null;
+					}
 				}
 			);
 		} else if (StringUtils.isNotEmpty(getSchemaLocation())) {
@@ -493,6 +496,10 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 							public String getSystemId() {
 								return null;
 							}
+
+							public String getTargetNamespace() {
+								return namespace;
+							}
 						}
 					);
 				}
@@ -511,6 +518,10 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 									}
 									public String getSystemId() {
 										return ClassUtils.getResourceURL(location).toExternalForm();
+									}
+
+									public String getTargetNamespace() {
+										return namespace;
 									}
 								}
 							);
@@ -553,6 +564,10 @@ public class XmlValidator extends FixedForwardPipe implements SchemasProvider, H
 					}
 					public String getSystemId() {
 						return url.toExternalForm();
+					}
+
+					public String getTargetNamespace() {
+						throw new UnsupportedOperationException();
 					}
 				}
 			);
