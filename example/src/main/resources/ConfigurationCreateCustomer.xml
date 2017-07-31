@@ -1,0 +1,52 @@
+<module>
+	<adapter name="CreateCustomer" description="Adapter om klanten aan te maken in backend systeem">
+		<receiver className="nl.nn.adapterframework.receivers.GenericReceiver" name="CreateCustomer_Receiver">
+			<listener className="nl.nn.adapterframework.http.RestListener" uriPattern="customers" method="POST"/>
+		</receiver>
+		<pipeline firstPipe="ExecuteInsertQuery">
+			<exits>
+				<exit path="EXIT" state="success"/>
+			</exits>
+			
+			<inputValidator
+				className="nl.nn.adapterframework.pipes.XmlValidator"
+				schema="CreateCustomer/xsd/klant.xsd"
+				throwException="true"
+				root="Klant" 
+			>
+			</inputValidator>
+			
+		
+				<pipe name="ExecuteInsertQuery" 
+	className="nl.nn.adapterframework.pipes.GenericMessageSendingPipe">
+	<sender name="ExecuteInsertQuery" 
+		className="nl.nn.adapterframework.jdbc.FixedQuerySender" 
+		query="INSERT INTO CUSTOMERS (ClientNr, Initials, Firstname, LastName, Title, Street, Postalcode, HouseNr, Addition, City, CreationDate) VALUES (?,?,?,?,?,?,?,?,?,?,SYSDATE);" 
+		jmsRealm="jdbc">
+		<param name="KlantNummer" sessionKey="originalMessage" xpathExpression="Klant/KlantNummer"/>
+		<param name="Voorletters" sessionKey="originalMessage" xpathExpression="Klant/Voorletters"/>
+		<param name="Voornaam" sessionKey="originalMessage" xpathExpression="Klant/Voornaam"/>
+		<param name="Achternaam" sessionKey="originalMessage" xpathExpression="Klant/Achternaam"/>
+		<param name="Titel" sessionKey="originalMessage" xpathExpression="Klant/Titel"/>
+		<param name="Straat" sessionKey="originalMessage" xpathExpression="Klant/Straat"/>
+		<param name="Postcode" sessionKey="originalMessage" xpathExpression="Klant/Postcode"/>
+		<param name="Huisnummer" sessionKey="originalMessage" xpathExpression="Klant/Huisnummer"/>
+		<param name="Huisnummer2" sessionKey="originalMessage" xpathExpression="Klant/Huisnummer2"/>
+		<param name="Plaats" sessionKey="originalMessage" xpathExpression="Klant/Plaats"/>
+	</sender>
+	<forward name="success" path="EXIT"/>
+</pipe>
+
+		</pipeline>
+	</adapter>
+	<scheduler>
+		<job
+			name="HelloWorld"
+			adapterName="HelloWorld"
+			receiverName="HelloWorld"
+			interval="0"
+			function="sendMessage"
+			active="${HelloWorld.active}"
+		/>
+	</scheduler>
+</module>
